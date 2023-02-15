@@ -28,7 +28,7 @@ func handleUserReqs(cli *gogpt.Client, ctx context.Context) {
 
 	req := gogpt.CompletionRequest{
 		Model:     gogpt.GPT3TextDavinci003,
-		MaxTokens: 10000,
+		MaxTokens: 3000,
 		Prompt:    userInput,
 		Stream:    true,
 	}
