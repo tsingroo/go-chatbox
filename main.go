@@ -5,11 +5,20 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
+	"os/exec"
+	"runtime"
 
 	gogpt "github.com/sashabaranov/go-gpt3"
 )
 
 func main() {
+	// 判断是否为windows系统
+	if runtime.GOOS == "windows" {
+		// windows下先执行chcp 65001命令，否则中文会乱码
+		execChcpCommand()
+	}
+
 	cli := gogpt.NewClient("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")
 	ctx := context.Background()
 	handleUserReqs(cli, ctx)
@@ -63,4 +72,11 @@ func handleUserReqs(cli *gogpt.Client, ctx context.Context) {
 		handleUserReqs(cli, ctx)
 	}
 
+}
+
+// execChcpCommand 执行chcp 65001命令
+func execChcpCommand() error {
+	cmd := exec.Command("chcp", "65001")
+	cmd.Stdout = os.Stdout
+	return cmd.Run()
 }
