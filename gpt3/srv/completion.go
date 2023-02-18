@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	gogpt "github.com/sashabaranov/go-gpt3"
@@ -37,7 +38,9 @@ func StreamCompletion(question string, ctx *gin.Context) {
 		}
 
 		if len(response.Choices) > 0 {
-			ctx.Writer.Write([]byte(response.Choices[0].Text))
+			originTxt := response.Choices[0].Text
+			htmlTxt := strings.ReplaceAll(originTxt, "\n", "<br>")
+			ctx.Writer.Write([]byte(htmlTxt))
 			ctx.Writer.Flush()
 		}
 

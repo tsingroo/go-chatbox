@@ -19,16 +19,15 @@
 		/* Chat container styles */
 		.chat-container {
 			width: 100%;
-			height: 100%;
+			height: calc(100% - 50px);
 			background-color: #f2f2f2;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			overflow: hidden;
-			padding: 10px;
+			padding-left: 10px;
+			padding-right: 10px;
 			font-family: Arial, sans-serif;
-      overflow-y: scroll;
-      padding-bottom: 50px;
+			overflow-y: scroll;
 		}
 
 		/* Sent message styles */
@@ -97,15 +96,29 @@
     <button type="submit">Send</button>
   </form> -->
 
-  <div class="chat-container" id="chat-container">
+  	<div class="chat-container" id="chat-container">
 		<div class="received-message">Hello! How are you?</div>
-		<div class="sent-message">I'm doing well, thanks for asking.</div>
-		
-    
-		<div class="input-box">
-			<input type="text" placeholder="请输入内容" class="input-field" id="input-field">
-			<button class="send-button" id="send-button">Send</button>
-		</div>
+		<div class="sent-message">I'm doing well, thanks for asking.</div>	
+		<div class="received-message">Hello! How are you?</div>
+		<div class="sent-message">I'm doing well, thanks for asking.</div>	
+		<div class="received-message">Hello! How are you?</div>
+		<div class="sent-message">I'm doing well, thanks for asking.</div>	
+		<div class="received-message">Hello! How are you?</div>
+		<div class="sent-message">I'm doing well, thanks for asking.</div>	
+		<div class="received-message">Hello! How are you?</div>
+		<div class="sent-message">I'm doing well, thanks for asking.</div>	
+		<div class="received-message">Hello! How are you?</div>
+		<div class="sent-message">I'm doing well, thanks for asking.</div>	
+		<div class="received-message">Hello! How are you?</div>
+		<div class="sent-message">I'm doing well, thanks for asking.</div>	
+		<div class="received-message">Hello! How are you?</div>
+		<div class="sent-message">I'm doing well, thanks for asking.</div>	
+		<div class="received-message">Hello! How are you?</div>
+		<div class="sent-message">I'm doing well, thanks for asking.</div>	
+	</div>
+	<div class="input-box">
+		<input type="text" placeholder="请输入内容" class="input-field" id="input-field">
+		<button class="send-button" id="send-button">Send</button>
 	</div>
 
   <script>
@@ -113,7 +126,6 @@
     const messageInput = document.getElementById('input-field');
     const sendButton = document.getElementById('send-button');
     const messages = [];
-    
 
     sendButton.addEventListener('click', (event) => {
       const messageText = messageInput.value.trim();
@@ -128,8 +140,38 @@
         messageItem.innerHTML = newMessage.text;
         messageList.appendChild(messageItem);
         messageInput.value = '';
+
+		sendMessage(messageText);
       }
     });
+  
+	
+	function sendMessage(message) {
+		
+		const respItem = document.createElement('div');
+		respItem.className = 'received-message';
+		messageList.appendChild(respItem);
+
+		// 创建一个新的XMLHttpRequest对象
+		var xhr = new XMLHttpRequest();
+
+		// 指定请求的类型、路径和是否异步
+		xhr.open('GET', `/stream?message=${message}`, true);
+
+		// 设置请求头中的Accept属性为event-stream
+		xhr.setRequestHeader('Accept', 'text/event-stream');
+
+		// 监听 "progress" 事件
+		xhr.addEventListener('progress', (event) => {
+			const text = event.currentTarget.responseText;
+			respItem.innerHTML = text;
+			messageList.scrollTop = messageList.scrollHeight;
+		});
+
+		// 发送GET请求
+		xhr.send();
+	}
+
   </script>
 </body>
 </html>

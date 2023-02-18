@@ -16,5 +16,5 @@ func main() {
 	})
 	engine.GET("/stream", gpt3controller.HandleStreamCompletion)
 
-	engine.Run(":8090")
+	engine.Run(":80")
 }
