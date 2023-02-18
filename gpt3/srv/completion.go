@@ -2,6 +2,7 @@ package srv
 
 import (
 	"errors"
+	"fmt"
 	"io"
 
 	"github.com/gin-gonic/gin"
@@ -27,17 +28,17 @@ func StreamCompletion(question string, ctx *gin.Context) {
 	for {
 		response, err := stream.Recv()
 		if errors.Is(err, io.EOF) {
-			ctx.Writer.Flush()
 			return
 		}
 
 		if err != nil {
-			// fmt.Printf("Stream error: %v\n", err)
+			fmt.Println("srv StreamCompletion error", err)
 			return
 		}
 
 		if len(response.Choices) > 0 {
 			ctx.Writer.Write([]byte(response.Choices[0].Text))
+			ctx.Writer.Flush()
 		}
 
 	}

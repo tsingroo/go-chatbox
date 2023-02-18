@@ -17,10 +17,10 @@ func HandleStreamCompletion(ctx *gin.Context) {
 		})
 		return
 	}
-	ctx.Header("Content-Type", "text/event-stream")
+	ctx.Header("Content-Type", "text/event-stream; charset=utf-8")
 	ctx.Header("Cache-Control", "no-cache")
 	ctx.Header("Connection", "keep-alive")
 	ctx.Header("Transfer-Encoding", "chunked")
 
-	srv.StreamCompletion(message, ctx)
+	srv.StreamCompletion(message+".", ctx)
 }
