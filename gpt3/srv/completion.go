@@ -14,7 +14,7 @@ func StreamCompletion(question string, ctx *gin.Context) {
 	cli := gogpt.NewClient("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")
 
 	req := gogpt.CompletionRequest{
-		Model:     gogpt.GPT3TextDavinci003,
+		Model:     gogpt.GPT3Dot5Turbo,
 		MaxTokens: 3000,
 		Prompt:    question,
 		Stream:    true,
