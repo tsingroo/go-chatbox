@@ -7,14 +7,14 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	gogpt "github.com/sashabaranov/go-gpt3"
+	openai "github.com/sashabaranov/go-openai"
 )
 
 func StreamCompletion(question string, ctx *gin.Context) {
-	cli := gogpt.NewClient("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")
+	cli := openai.NewClient("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")
 
-	req := gogpt.CompletionRequest{
-		Model:     gogpt.GPT3Dot5Turbo,
+	req := openai.CompletionRequest{
+		Model:     openai.GPT3Dot5Turbo,
 		MaxTokens: 3000,
 		Prompt:    question,
 		Stream:    true,
