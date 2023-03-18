@@ -22,5 +22,5 @@ func HandleStreamCompletion(ctx *gin.Context) {
 	ctx.Header("Connection", "keep-alive")
 	ctx.Header("Transfer-Encoding", "chunked")
 
-	srv.StreamCompletion(message+".", ctx)
+	srv.StreamCompletion(message, ctx)
 }

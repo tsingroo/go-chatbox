@@ -13,18 +13,24 @@ import (
 func StreamCompletion(question string, ctx *gin.Context) {
 	cli := openai.NewClient("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")
 
-	req := openai.CompletionRequest{
+	req := openai.ChatCompletionRequest{
 		Model:     openai.GPT3Dot5Turbo,
 		MaxTokens: 3000,
-		Prompt:    question,
 		Stream:    true,
+		Messages: []openai.ChatCompletionMessage{
+			{
+				Role:    openai.ChatMessageRoleUser,
+				Content: "Hello!",
+			},
+		},
 	}
 
-	stream, err := cli.CreateCompletionStream(ctx, req)
+	stream, err := cli.CreateChatCompletionStream(ctx, req)
 	if err != nil {
 		return
 	}
 	defer stream.Close()
+	respText := ""
 
 	for {
 		response, err := stream.Recv()
@@ -38,8 +44,8 @@ func StreamCompletion(question string, ctx *gin.Context) {
 		}
 
 		if len(response.Choices) > 0 {
-			originTxt := response.Choices[0].Text
-			htmlTxt := strings.ReplaceAll(originTxt, "\n", "<br>")
+			respText = respText + response.Choices[0].Delta.Content
+			htmlTxt := strings.ReplaceAll(respText, "\n", "<br>")
 			ctx.Writer.Write([]byte(htmlTxt))
 			ctx.Writer.Flush()
 		}
