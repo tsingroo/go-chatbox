@@ -4,6 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
+	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +14,18 @@ import (
 )
 
 func StreamCompletion(question string, ctx *gin.Context) {
-	cli := openai.NewClient("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")
+	// 先获取http代理client
+	proxyClient, err := getProxyHttpClient()
+	if err != nil {
+		fmt.Println("获取代理失败", err)
+		ctx.Writer.Write([]byte(err.Error()))
+		return
+	}
+
+	cliCfg := openai.DefaultConfig("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")
+	cliCfg.HTTPClient = proxyClient
+
+	cli := openai.NewClientWithConfig(cliCfg)
 
 	req := openai.ChatCompletionRequest{
 		Model:     openai.GPT3Dot5Turbo,
@@ -20,7 +34,7 @@ func StreamCompletion(question string, ctx *gin.Context) {
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role:    openai.ChatMessageRoleUser,
-				Content: "Hello!",
+				Content: question,
 			},
 		},
 	}
@@ -32,7 +46,6 @@ func StreamCompletion(question string, ctx *gin.Context) {
 		return
 	}
 	defer stream.Close()
-	respText := ""
 
 	for {
 		response, err := stream.Recv()
@@ -46,11 +59,28 @@ func StreamCompletion(question string, ctx *gin.Context) {
 		}
 
 		if len(response.Choices) > 0 {
-			respText = respText + response.Choices[0].Delta.Content
+			respText := response.Choices[0].Delta.Content
 			htmlTxt := strings.ReplaceAll(respText, "\n", "<br>")
 			ctx.Writer.Write([]byte(htmlTxt))
 			ctx.Writer.Flush()
 		}
 
 	}
+}
+
+// getProxyHttpClient 获取http代理client
+func getProxyHttpClient() (*http.Client, error) {
+	proxyUrl, err := url.Parse("http://localhost:10080")
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+
+	transport := &http.Transport{
+		Proxy: http.ProxyURL(proxyUrl),
+	}
+
+	client := &http.Client{Transport: transport}
+
+	return client, nil
 }
