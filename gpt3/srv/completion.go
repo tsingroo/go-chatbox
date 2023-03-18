@@ -27,6 +27,8 @@ func StreamCompletion(question string, ctx *gin.Context) {
 
 	stream, err := cli.CreateChatCompletionStream(ctx, req)
 	if err != nil {
+		fmt.Println("srv StreamCompletion error", err)
+		ctx.Writer.Write([]byte(err.Error()))
 		return
 	}
 	defer stream.Close()
