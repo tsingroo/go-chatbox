@@ -40,7 +40,7 @@ func StreamCompletion(question string, ctx *gin.Context) {
 
 	stream, err := cli.CreateChatCompletionStream(ctx, req)
 	if err != nil {
-		fmt.Println("srv StreamCompletion error", err)
+		fmt.Println("cli CreateChatCompletionStream error", err)
 		ctx.Writer.Write([]byte(err.Error()))
 		return
 	}
@@ -68,7 +68,7 @@ func StreamCompletion(question string, ctx *gin.Context) {
 
 // getProxyHttpClient 获取http代理client
 func getProxyHttpClient() (*http.Client, error) {
-	proxyUrl, err := url.Parse("http://127.0.0.1:10080")
+	proxyUrl, err := url.Parse("http://localhost:20171")
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
