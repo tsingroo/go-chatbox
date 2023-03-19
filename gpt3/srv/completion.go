@@ -21,7 +21,7 @@ func StreamCompletion(question string, ctx *gin.Context) {
 		return
 	}
 
-	cliCfg := openai.DefaultConfig("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")
+	cliCfg := openai.DefaultConfig("PUT_YOU_KEYS_HERE")
 	cliCfg.HTTPClient = proxyClient
 
 	cli := openai.NewClientWithConfig(cliCfg)
