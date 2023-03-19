@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	openai "github.com/sashabaranov/go-openai"
@@ -60,8 +59,7 @@ func StreamCompletion(question string, ctx *gin.Context) {
 
 		if len(response.Choices) > 0 {
 			respText := response.Choices[0].Delta.Content
-			htmlTxt := strings.ReplaceAll(respText, "\n", "<br>")
-			ctx.Writer.Write([]byte(htmlTxt))
+			ctx.Writer.Write([]byte(respText))
 			ctx.Writer.Flush()
 		}
 
@@ -70,7 +68,7 @@ func StreamCompletion(question string, ctx *gin.Context) {
 
 // getProxyHttpClient 获取http代理client
 func getProxyHttpClient() (*http.Client, error) {
-	proxyUrl, err := url.Parse("http://localhost:10080")
+	proxyUrl, err := url.Parse("http://127.0.0.1:10080")
 	if err != nil {
 		log.Fatal(err)
 		return nil, err

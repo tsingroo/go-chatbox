@@ -104,6 +104,8 @@
 		<button class="send-button" id="send-button">Send</button>
 	</div>
 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/13.0.1/markdown-it.min.js"></script>
+
   <script>
     const messageList = document.getElementById('chat-container');
     const messageInput = document.getElementById('input-field');
@@ -144,10 +146,12 @@
 		// 设置请求头中的Accept属性为event-stream
 		xhr.setRequestHeader('Accept', 'text/event-stream');
 
+		var md = window.markdownit();
+
 		// 监听 "progress" 事件
 		xhr.addEventListener('progress', (event) => {
 			const text = event.currentTarget.responseText;
-			respItem.innerHTML = text;
+			respItem.innerHTML = md.render(text);
 			messageList.scrollTop = messageList.scrollHeight;
 		});
 
