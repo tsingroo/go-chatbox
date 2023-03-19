@@ -21,7 +21,7 @@ func StreamCompletion(question string, ctx *gin.Context) {
 		return
 	}
 
-	cliCfg := openai.DefaultConfig("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")
+	cliCfg := openai.DefaultConfig("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")
 	cliCfg.HTTPClient = proxyClient
 
 	cli := openai.NewClientWithConfig(cliCfg)
@@ -49,11 +49,13 @@ func StreamCompletion(question string, ctx *gin.Context) {
 	for {
 		response, err := stream.Recv()
 		if errors.Is(err, io.EOF) {
+			fmt.Println("stream.Recv EOF", err)
 			return
 		}
 
 		if err != nil {
 			fmt.Println("srv StreamCompletion error", err)
+			ctx.Writer.Write([]byte(err.Error()))
 			return
 		}
 
